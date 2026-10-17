@@ -1,0 +1,4 @@
+interface:
+  display_name: "知迹 CogniTrail"
+  short_description: "把这次改动里的决策点留成可复测的卡片。每张卡片钉住真实 文件:行号，定位不到的一律丢弃。"
+  default_prompt: "记录这次改动的决策卡片，并准备几个几天后可以拿来复测的问题。"

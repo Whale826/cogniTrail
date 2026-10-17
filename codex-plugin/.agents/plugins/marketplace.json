@@ -1,0 +1,20 @@
+{
+  "name": "cognitrail-local",
+  "interface": {
+    "displayName": "知迹 CogniTrail（本地）"
+  },
+  "plugins": [
+    {
+      "name": "cognitrail",
+      "source": {
+        "source": "local",
+        "path": "./plugins/cognitrail"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+# 知迹 CogniTrail 刻意做到「零第三方依赖」。
+#
+# 真模型调用走标准库 urllib；.env 的解析内置了一个极简回退实现。
+# 所以这个文件是空的 —— 别人拿到项目，只要有 Python 3.10+ 和 git 就能跑，
+# 不需要 pip install 任何东西。
+#
+# 可选（装了更好，不装也不影响）：
+#   python-dotenv   .env 解析支持更多写法（export 前缀、行内注释等）
+#
+# 历史说明：早期版本依赖 openai 包（真模型调用）+ rich（终端美化），
+# 现已移除，目的是把「上手步骤」从 3 步压到 0 步。
+# pip install python-dotenv

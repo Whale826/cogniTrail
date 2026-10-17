@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知迹 CogniTrail · 界面样板（白色 · Codex 风格）</title>
+<style>
+  :root{
+    --bg-app:#f7f7f8;          /* 侧栏底 */
+    --bg-main:#ffffff;         /* 主区底 */
+    --bg-raise:#f4f4f5;        /* 卡片 / 浮起 */
+    --bg-hover:#f0f0f1;
+    --bg-active:#ececee;
+    --line:#e6e6e8;
+    --line-soft:#efeff1;
+    --ink:#18181b;
+    --ink-2:#52525b;
+    --ink-3:#71717a;
+    --ink-4:#a1a1aa;
+    --dark:#18181b;
+    --ok:#15803d;      --ok-bg:rgba(21,128,61,.09);
+    --warn:#b45309;    --warn-bg:rgba(180,83,9,.09);
+    --danger:#dc2626;  --danger-bg:rgba(220,38,38,.08);
+    --src-codex:#71717a;
+    --src-wb:#19c37d;
+    --src-claude:#d97757;
+    --r-lg:12px; --r-md:10px; --r-sm:8px;
+    --mono:ui-monospace,"Cascadia Code",Consolas,"Courier New",monospace;
+    --sans:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--sans);font-size:13.5px;line-height:1.6;
+    background:var(--bg-main);color:var(--ink);
+    display:grid;grid-template-columns:300px 1fr;overflow:hidden;
+  }
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-thumb{background:#d4d4d8;border-radius:99px}
+  ::-webkit-scrollbar-track{background:transparent}
+  button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  .mono{font-family:var(--mono)}
+
+  /* ============ 左栏 ============ */
+  .left{background:var(--bg-app);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+  .brand{display:flex;align-items:center;gap:10px;padding:16px 16px 12px}
+  .brand .logo{width:26px;height:26px;border-radius:8px;background:var(--dark);color:#ffffff;
+    display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+  .brand b{font-size:14px;font-weight:600;letter-spacing:.01em}
+  .brand .proj{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--ink-3);font-size:12px;
+    padding:4px 9px;border-radius:99px;border:1px solid var(--line);background:var(--bg-main)}
+  .brand .proj:hover{background:var(--bg-hover);color:var(--ink-2)}
+
+  .label{font-size:11px;letter-spacing:.09em;color:var(--ink-4);padding:0 6px;margin:4px 0 8px}
+
+  .actions{padding:4px 12px 14px;border-bottom:1px solid var(--line-soft)}
+  .btn-primary{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--dark);color:#ffffff;font-weight:600;font-size:13px;
+    padding:10px 12px;border-radius:var(--r-md);transition:background .15s}
+  .btn-primary:hover{background:#2e2e33}
+  .btn-primary svg{width:15px;height:15px}
+  .action-row{width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;margin-top:2px;
+    border-radius:var(--r-sm);color:var(--ink-2);transition:background .12s,color .12s;text-align:left}
+  .action-row:hover{background:var(--bg-hover);color:var(--ink)}
+  .action-row svg{width:15px;height:15px;flex:0 0 auto;stroke:currentColor}
+  .action-row .k{flex:1;font-size:13px}
+  .action-row .hint{font-size:11px;color:var(--ink-4)}
+  .act-group{margin-top:14px}
+  .act-group:first-of-type{margin-top:10px}
+
+  .sessions{flex:1;min-height:0;display:flex;flex-direction:column;padding:12px 8px 8px}
+  .sess-head{display:flex;align-items:center;padding:0 10px;margin-bottom:6px}
+  .sess-head .count{margin-left:auto;font-size:11px;color:var(--ink-4);font-family:var(--mono)}
+  .sess-list{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:2px}
+  .sess{display:flex;flex-direction:column;gap:3px;padding:9px 10px;border-radius:var(--r-md);
+    cursor:pointer;transition:background .12s;border:1px solid transparent;background:transparent}
+  .sess:hover{background:var(--bg-hover)}
+  .sess.on{background:var(--bg-active);border-color:#d4d4d8}
+  .sess .r1{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-3)}
+  .sess .dot{width:7px;height:7px;border-radius:99px;flex:0 0 auto}
+  .sess .r1 .t{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-4)}
+  .sess .r2{font-size:12.8px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sess.on .r2{color:var(--ink)}
+  .left-foot{padding:8px 16px 12px;font-size:11px;color:var(--ink-4);display:flex;justify-content:space-between}
+
+  /* ============ 主区 ============ */
+  .main{display:flex;flex-direction:column;min-height:0;min-width:0}
+  .topbar{height:54px;flex:0 0 auto;display:flex;align-items:center;gap:14px;padding:0 20px;border-bottom:1px solid var(--line)}
+  .crumb{font-size:13.5px;font-weight:600}
+  .crumb .n{color:var(--ink-3);font-weight:400;font-size:12.5px;margin-left:8px}
+  .topbar .sp{flex:1}
+  .seg{display:flex;background:var(--bg-raise);border:1px solid var(--line);border-radius:99px;padding:2px}
+  .seg button{padding:4px 12px;border-radius:99px;font-size:12px;color:var(--ink-3)}
+  .seg button.on{background:#e4e4e7;color:var(--ink)}
+  .iconbtn{display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:var(--r-sm);
+    border:1px solid var(--line);color:var(--ink-2);font-size:12.5px;transition:background .12s,color .12s;background:var(--bg-main)}
+  .iconbtn:hover{background:var(--bg-hover);color:var(--ink)}
+  .iconbtn svg{width:14px;height:14px;stroke:currentColor}
+
+  .audit{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:11px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border-radius:99px;font-size:12px;font-weight:500}
+  .badge .bd{width:7px;height:7px;border-radius:99px}
+  .badge.warn{background:var(--warn-bg);color:var(--warn)}
+  .badge.ok{background:var(--ok-bg);color:var(--ok)}
+  .badge.danger{background:var(--danger-bg);color:var(--danger)}
+  .stat{display:flex;align-items:baseline;gap:6px;padding:4px 11px;border-radius:99px;border:1px solid var(--line);font-size:12px;color:var(--ink-3);cursor:pointer;background:var(--bg-main)}
+  .stat:hover{background:var(--bg-hover)}
+  .stat b{color:var(--ink);font-family:var(--mono);font-weight:600;font-size:12.5px}
+  .stat .sub{color:var(--ink-4)}
+  .flag{display:inline-flex;align-items:center;gap:8px;padding:4px 11px;border-radius:var(--r-sm);
+    background:var(--danger-bg);color:var(--danger);font-size:12px;cursor:pointer}
+  .flag:hover{background:rgba(220,38,38,.15)}
+  .flag .mono{font-size:11px;opacity:.75}
+
+  .detail{flex:1;min-height:0;overflow-y:auto;padding:26px 34px 30px}
+  .detail-inner{max-width:820px;margin:0 auto}
+  .d-crumb{font-size:12px;color:var(--ink-4);margin-bottom:10px}
+  .d-crumb .mono{color:var(--ink-3)}
+  .d-head{display:flex;align-items:flex-start;gap:14px}
+  .d-title{font-size:19px;font-weight:600;line-height:1.45;flex:1}
+  .d-copy{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:var(--r-sm);
+    border:1px solid var(--line);color:var(--ink-2);font-size:12.5px;background:var(--bg-main)}
+  .d-copy:hover{background:var(--bg-hover);color:var(--ink)}
+  .d-copy svg{width:13px;height:13px;stroke:currentColor}
+  .d-tags{display:flex;align-items:center;gap:8px;margin:14px 0 4px;flex-wrap:wrap}
+  .tag{font-size:11.5px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--ink-3);background:var(--bg-main)}
+  .tag.key{background:var(--ok-bg);border-color:transparent;color:var(--ok);font-weight:500}
+  .tag.gone{color:var(--ink-4)}
+  .tag .dot{width:6px;height:6px;border-radius:99px;display:inline-block;margin-right:6px;vertical-align:1px}
+  .coord{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border-radius:6px;background:var(--bg-raise);
+    border:1px solid var(--line);color:var(--ink-2);cursor:pointer}
+  .coord:hover{background:var(--bg-hover);color:var(--ink)}
+
+  .sec{margin-top:22px}
+  .sec .k{font-size:11px;letter-spacing:.09em;color:var(--ink-4);margin-bottom:7px}
+  .sec .v{font-size:13.5px;color:var(--ink);line-height:1.75}
+  .alts{display:flex;flex-direction:column;gap:7px}
+  .alt{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:1px solid var(--line-soft);
+    border-radius:var(--r-md);background:var(--bg-raise)}
+  .alt .no{flex:0 0 auto;font-size:11px;color:var(--ink-4);padding:2px 8px;border-radius:99px;border:1px solid var(--line);margin-top:1px;background:var(--bg-main)}
+  .alt .tx{font-size:12.8px;color:var(--ink-2)}
+  .alt .wy{font-size:11.5px;color:var(--ink-4);margin-top:2px}
+
+  .evidence{margin-top:22px;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+  .ev-head{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--bg-raise);border-bottom:1px solid var(--line)}
+  .ev-head .t{font-size:11px;letter-spacing:.08em;color:var(--ink-4)}
+  .ev-head .mono{font-size:11.5px;color:var(--ink-2)}
+  .ev-head button{margin-left:auto;font-size:11.5px;color:var(--ink-3);padding:3px 9px;border-radius:6px}
+  .ev-head button:hover{background:var(--bg-hover);color:var(--ink)}
+  .ev-body{padding:14px 16px;font-family:var(--mono);font-size:12.3px;line-height:1.7;color:#3f3f46;
+    white-space:pre;overflow-x:auto;background:#fafafa}
+  .ev-body .hl{background:rgba(21,128,61,.07);display:block;margin:0 -16px;padding:0 16px;color:var(--ink)}
+
+  .chain{margin-top:22px;border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 16px;background:var(--bg-raise)}
+  .chain .k{font-size:11px;letter-spacing:.09em;color:var(--ink-4);margin-bottom:10px}
+  .chain .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12.8px}
+  .chain .old{color:var(--ink-4);text-decoration:line-through}
+  .chain .why{font-size:11.5px;color:var(--warn);padding:2px 9px;border-radius:99px;background:var(--warn-bg)}
+  .chain .now{color:var(--ink)}
+  .chain .arr{color:var(--ink-4)}
+
+  /* ============ 右下：卡片摘要 ============ */
+  .summary{flex:0 0 auto;border-top:1px solid var(--line);background:var(--bg-app);padding:12px 20px 14px}
+  .sum-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .sum-head .t{font-size:12.5px;font-weight:600}
+  .sum-head .c{font-size:11.5px;color:var(--ink-4)}
+  .sum-head .more{margin-left:auto;font-size:12px;color:var(--ink-3)}
+  .sum-head .more:hover{color:var(--ink)}
+  .sum-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+  .sum-card{flex:0 0 256px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg-main);
+    padding:11px 13px;cursor:pointer;transition:border-color .12s,background .12s}
+  .sum-card:hover{border-color:#c8c8cd}
+  .sum-card.on{border-color:#8e8e93;box-shadow:0 0 0 1px #8e8e93 inset}
+  .sum-card .r1{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-3);margin-bottom:7px;overflow:hidden}
+  .sum-card .dot{width:6px;height:6px;border-radius:99px;flex:0 0 auto}
+  .sum-card .stg{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sum-card .r1 .st{margin-left:auto;flex:0 0 auto;font-size:10.5px}
+  .sum-card .st.sup{color:var(--ink-4)}
+  .sum-card .st.drop{color:var(--danger)}
+  .sum-card .tt{font-size:12.6px;color:var(--ink-2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .sum-card.on .tt{color:var(--ink)}
+  .sum-card .mt{margin-top:8px;display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;color:var(--ink-4)}
+  .sum-card .tchip{font-family:var(--sans);font-size:10.5px;padding:1px 8px;border-radius:99px;border:1px solid var(--line);color:var(--ink-3);flex:0 0 auto}
+  .sum-card .tchip.key{background:var(--ok-bg);border-color:transparent;color:var(--ok)}
+
+  /* ============ 抽屉 ============ */
+  .overlay{position:fixed;inset:0;background:rgba(24,24,27,.22);opacity:0;pointer-events:none;transition:opacity .22s;z-index:40}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:460px;max-width:92vw;background:#ffffff;
+    border-left:1px solid var(--line);transform:translateX(102%);transition:transform .24s ease;z-index:50;
+    display:flex;flex-direction:column}
+  body.drawer-open .overlay{opacity:1;pointer-events:auto}
+  body.drawer-open .drawer{transform:translateX(0)}
+  .dw-head{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--line)}
+  .dw-head .t{font-size:13.5px;font-weight:600}
+  .dw-head .sub{font-size:11.5px;color:var(--ink-4)}
+  .dw-head .x{margin-left:auto;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--ink-3)}
+  .dw-head .x:hover{background:var(--bg-hover);color:var(--ink)}
+  .dw-body{flex:1;overflow-y:auto;padding:16px 18px}
+
+  .logline{display:flex;gap:10px;padding:7px 10px;border-radius:var(--r-sm);font-family:var(--mono);font-size:11.8px;line-height:1.6}
+  .logline:hover{background:var(--bg-hover)}
+  .logline .tm{color:var(--ink-4);flex:0 0 62px}
+  .logline .tx{color:var(--ink-2)}
+  .logline.bad .tx{color:var(--danger)}
+  .logline.ok .tx{color:var(--ok)}
+
+  .set-row{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line-soft)}
+  .set-row .k{font-size:13px}
+  .set-row .s{font-size:11.5px;color:var(--ink-4)}
+  .set-row .sp{flex:1}
+  .switch{width:34px;height:20px;border-radius:99px;background:#d4d4d8;position:relative;transition:background .15s}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:99px;background:#ffffff;transition:all .15s;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+  .switch.on{background:var(--ok)}
+  .switch.on::after{left:16px;background:#ffffff}
+  .radio{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+  .radio .rc{width:15px;height:15px;border-radius:99px;border:1.5px solid var(--ink-4);display:inline-block;position:relative}
+  .radio.on .rc{border-color:var(--dark)}
+  .radio.on .rc::after{content:"";position:absolute;inset:3px;border-radius:99px;background:var(--dark)}
+  .keybox{display:flex;gap:8px;margin-top:8px}
+  .keybox input{flex:1;background:var(--bg-raise);border:1px solid var(--line);border-radius:var(--r-sm);
+    padding:8px 11px;color:var(--ink);font-family:var(--mono);font-size:12px;outline:none}
+  .keybox input:focus{border-color:#c8c8cd}
+  .mini-btn{padding:7px 13px;border-radius:var(--r-sm);border:1px solid var(--line);font-size:12px;color:var(--ink-2);background:var(--bg-main)}
+  .mini-btn:hover{background:var(--bg-hover);color:var(--ink)}
+  .mini-btn.solid{background:var(--dark);color:#ffffff;border-color:var(--dark);font-weight:600}
+  .mini-btn.solid:hover{background:#2e2e33}
+
+  .rp{font-size:13px;line-height:1.8;color:var(--ink-2)}
+  .rp h4{font-size:13.5px;color:var(--ink);margin:16px 0 6px;font-weight:600}
+  .rp h4:first-child{margin-top:0}
+  .rp ol{padding-left:20px}
+  .rp li{margin:4px 0}
+  .rp .note{font-size:11.5px;color:var(--ink-4);border-top:1px solid var(--line-soft);padding-top:10px;margin-top:16px}
+  .rp .del{color:var(--ink-4);text-decoration:line-through}
+</style>
+</head>
+<body>
+
+<!-- ================= 左栏 ================= -->
+<aside class="left">
+  <div class="brand">
+    <div class="logo">迹</div>
+    <b>知迹</b>
+    <button class="proj">知迹 CogniTrail ▾</button>
+  </div>
+
+  <div class="actions">
+    <div class="act-group">
+      <div class="label">记录</div>
+      <button class="btn-primary" onclick="toast('已生成 2 张卡片（1 条被证据闸门丢弃）')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg>
+        生成这一段的决策
+      </button>
+      <button class="action-row" onclick="openDrawer('report')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/><path d="M17 15l3 3-3 3" transform="translate(0,-4)"/></svg>
+        <span class="k">整理决策</span><span class="hint">排序 · 融合 · 演进链</span>
+      </button>
+      <button class="action-row" onclick="openDrawer('report')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        <span class="k">总结工作流</span><span class="hint">要求 · 经过 · 名词</span>
+      </button>
+      <button class="action-row" onclick="toast('正在唤起本机 claude …（只问答，不改文件）')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4L21 4l-1 4.2c.6 1.1 1 2.4 1 3.8z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
+        <span class="k">和 AI 对话</span><span class="hint">用你本机已登录的 CLI</span>
+      </button>
+    </div>
+
+    <div class="act-group">
+      <div class="label">查看</div>
+      <button class="action-row" onclick="toast('决策面板已在浏览器打开（43 条）')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <span class="k">打开决策面板</span><span class="hint">网页版 · 可分享</span>
+      </button>
+      <button class="action-row" onclick="openDrawer('log')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg>
+        <span class="k">日志</span><span class="hint" id="log-badge">3 条新</span>
+      </button>
+      <button class="action-row" onclick="openDrawer('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.09a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.09a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
+        <span class="k">设置</span><span class="hint">Key · 来源 · CLI</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sessions">
+    <div class="sess-head">
+      <div class="label" style="margin:0">会话</div>
+      <span class="count">5 份</span>
+    </div>
+    <div class="sess-list" id="sess-list"></div>
+  </div>
+  <div class="left-foot"><span>监控中 · 3 个来源</span><span>自检通过</span></div>
+</aside>
+
+<!-- ================= 主区 ================= -->
+<main class="main">
+  <div class="topbar">
+    <div class="crumb">决策详情<span class="n">知迹 CogniTrail · 共 43 条记录</span></div>
+    <div class="sp"></div>
+    <div class="seg" id="tone-seg">
+      <button data-tone="plain" class="on">小白</button>
+      <button data-tone="pro">专家</button>
+    </div>
+    <button class="iconbtn" onclick="openDrawer('log')">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg>
+      日志
+    </button>
+    <button class="iconbtn" onclick="openDrawer('settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/></svg>
+      设置
+    </button>
+  </div>
+
+  <div class="audit">
+    <span class="badge warn"><span class="bd" style="background:var(--warn)"></span>带解释性说明 · 不是无保留</span>
+    <button class="stat"><b>12</b>关键决策</button>
+    <button class="stat"><b>2</b>需人工复核<span class="sub">（其中 1 条存疑）</span></button>
+    <button class="stat"><b>3</b>未审计</button>
+    <button class="stat"><b>0</b>未取证</button>
+    <button class="flag" onclick="openDrawer('log')">有一条改动绕过了检查流程（--no-verify）<span class="mono">tools/build_exe.py:88</span></button>
+  </div>
+
+  <div class="detail"><div class="detail-inner" id="detail"></div></div>
+
+  <div class="summary">
+    <div class="sum-head">
+      <span class="t">决策卡片摘要</span>
+      <span class="c" id="sum-count"></span>
+      <button class="more">全部 43 条 →</button>
+    </div>
+    <div class="sum-row" id="sum-row"></div>
+  </div>
+</main>
+
+<!-- ================= 抽屉 ================= -->
+<div class="overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="dw-head">
+    <span class="t" id="dw-title"></span>
+    <span class="sub" id="dw-sub"></span>
+    <button class="x" onclick="closeDrawer()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="dw-body" id="dw-body"></div>
+</aside>
+
+<script>
+/* ---------------- 数据 ---------------- */
+const SRC = { workbuddy:{name:"WorkBuddy",color:"var(--src-wb)"}, codex:{name:"Codex",color:"var(--src-codex)"}, claude:{name:"Claude",color:"var(--src-claude)"} };
+
+const SESSIONS = [
+  {id:"s1", date:"10-16", time:"14:22", source:"workbuddy", title:"决策卡片审计化：反舞弊痕迹与审计意见", turns:14},
+  {id:"s2", date:"10-15", time:"21:07", source:"codex",     title:"界面重做：概览页的信息架构", turns:9},
+  {id:"s3", date:"10-15", time:"11:40", source:"claude",    title:"CLI 桥：六家命令行的非交互接入", turns:11},
+  {id:"s4", date:"10-14", time:"16:55", source:"codex",     title:"项目主线 project-map 与卡片挂靠", turns:7},
+  {id:"s5", date:"10-13", time:"10:12", source:"workbuddy", title:"证据闸门加严：起始行和结束行都校验", turns:16},
+];
+
+const CARDS = [
+  { id:"c1", sid:"s1", source:"workbuddy", stage:"S3 卡片审计化", tier:"key", status:"active", created:"10-16 14:02",
+    title:{plain:"能不能照单全收这件事，由程序按规则判断，不让 AI 自己说", pro:"审计意见的判定收敛到 audit.opinion()，由脚本按规则计算，模型不参与结论"},
+    why:{plain:"AI 有时候会把「我没检查过」说成「我检查过没问题」，这句话恰恰最不能让它说", pro:"模型会把「没查过」说成「查过没问题」，这是审计模块最不该犯的错"},
+    alts:[{t:"让模型直接给出审计意见", w:"被否：它倾向于讨好式地说「没问题」"},{t:"只给结论不给数字", w:"被否：没有数字就没有办法复核"}],
+    risk:{plain:"程序规则偶尔会看错，需要你亲自看一眼标出来的地方", pro:"规则判定存在误报，命中可疑痕迹需人工复核"},
+    file:"src/audit.py", lines:412, quote:"def opinion(counts: dict) -> str:\n    \"\"\"唯一允许生成审计意见的入口。\"\"\"",
+    chain:null },
+
+  { id:"c2", sid:"s1", source:"workbuddy", stage:"S3 卡片审计化", tier:"key", status:"active", created:"10-16 14:11",
+    title:{plain:"可疑的地方会单独列出来，还写清楚「两个数字里哪个包含哪个」", pro:"反舞弊痕迹单独成区，计数文案统一走 counts_line()，并显式标注 high ⊂ flagged"},
+    why:{plain:"之前两个数字摆在一起，看不出谁是谁的一部分，容易误以为问题翻倍", pro:"并列显示两个数字而不标包含关系，会让它们看起来是互不相干的集合"},
+    alts:[{t:"用红色把可疑卡片整条标红", w:"被否：满屏红色之后，真正要看的反而找不到"}],
+    risk:{plain:"提示多了会显得啰嗦，但宁可啰嗦也不能漏", pro:"提示密度上升，属于用噪音换诚实的有意取舍"},
+    file:"src/audit.py", lines:509, quote:"def counts_line(counts: dict) -> str:\n    return f\"关键决策 {counts['key']} 条 · 需人工复核 {counts['flagged']} 条（其中存疑 {counts['doubt']} 条）\"",
+    chain:null },
+
+  { id:"c3", sid:"s1", source:"codex", stage:"S4 界面重做", tier:"minor", status:"active", created:"10-15 20:48",
+    title:{plain:"每条决策都能一眼看到它在哪个文件哪一行，点一下就到原文", pro:"证据坐标（file:lines）从详情页提升到卡片列表行，一步点到原文"},
+    why:{plain:"核对太麻烦的话，就没人真的去核对了", pro:"核对成本决定核对率；隐藏在二级页的坐标等于没有坐标"},
+    alts:[{t:"保持只在详情页显示坐标", w:"被否：用户永远不会为了看一眼去点两层"}],
+    risk:{plain:"列表一行会变高一些，一屏少看几条", pro:"行高增加约 8px，单屏可见条目减少"},
+    file:"src/gui.py", lines:426, quote:"where = f\"{card.get('file', '')}:{card.get('lines', '')}\".strip(':')",
+    chain:null },
+
+  { id:"c4", sid:"s1", source:"claude", stage:"S3 卡片审计化", tier:"minor", status:"active", created:"10-15 12:30",
+    title:{plain:"AI 命令行没登录时，不再把报错当成回答展示给你", pro:"CLI 未登录时退出码仍为 0，改为 looks_like_error() 以短文本 + 特征词识别"},
+    why:{plain:"那种情况下窗口会把「403 未登录」当成 AI 的话显示出来，看着像答案其实是报错", pro:"非交互模式下错误信息混在 stdout 里，界面无法靠退出码区分"},
+    alts:[{t:"要求 CLI 以 JSON 输出再解析", w:"被否：各家格式不一样，维护成本高"}],
+    risk:{plain:"个别特别短的正常回答可能被误当成报错", pro:"启发式识别存在假阳性，特征词表需要随 CLI 版本维护"},
+    file:"src/cli_bridge.py", lines:213, quote:"def looks_like_error(text: str) -> bool:",
+    chain:null },
+
+  { id:"c5", sid:"s1", source:"codex", stage:"S2 打通模型通道", tier:"key", status:"active", created:"10-14 17:39",
+    title:{plain:"网络直连不通的时候，改走本机的代理节点，而不是反复重试", pro:"绕过 AI 工具自带的代理，改用本机香港节点直连模型接口"},
+    why:{plain:"自带的代理把请求转到了错误的端口，怎么重试都没用；换节点只是换出口，不动数据库权限", pro:"自带代理转发至错误端口导致隧道错误；更换出口节点不改变上游鉴权"},
+    alts:[{t:"继续用自带代理重试", w:"被否：错误稳定复现，不是抖动"},{t:"直接抓原始 PDF", w:"被否：403 / Cloudflare 拦截"}],
+    risk:{plain:"依赖本机的代理设置，换电脑或改设置就失效", pro:"依赖本机 Clash 配置，环境变化即失效"},
+    file:".env", lines:7, quote:"DEEPSEEK_BASE_URL=https://api.deepseek.com",
+    chain:{ old:"把探测到的本地代理端口写成默认值", why:"别人下载后连不上，不适合作为分发默认值", now:"默认走官方地址，探测到本机代理后只作为备选" } },
+
+  { id:"c6", sid:"s2", source:"codex", stage:"S4 界面重做", tier:"note", status:"superseded", statusNote:"已被后面的做法取代", created:"10-13 09:20",
+    title:{plain:"把生成范围做成了两个数字输入框", pro:"生成范围以 Spinbox（起始轮 ~ 结束轮）表达"},
+    why:{plain:"一开始只想到了「选一段」，没想到用户更喜欢直接在对话上划一段", pro:"未预见到刷选交互的发现成本低于数字输入"},
+    alts:[{t:"整份会话一次全部生成", w:"被否：卡片又多又碎"}],
+    risk:{plain:"已经被更好的做法取代", pro:"已被刷选联动方案取代"},
+    file:"src/gui.py", lines:398, quote:"self.range_start = tk.IntVar(value=1)",
+    chain:null },
+
+  { id:"c7", sid:"s2", source:"codex", stage:"S1 立项", tier:"note", status:"dropped", statusNote:"已剔除", created:"10-13 08:05",
+    title:{plain:"最早想做成一整套代码质量扫描器", pro:"初版定位为通用代码质量扫描器"},
+    why:{plain:"后来想清楚了：代码对不对有别的工具管，这里管的是「怎么被决定下来的」", pro:"与既有扫描器赛道重叠，产品收窄为决策留痕与审计"},
+    alts:[], risk:{plain:"方向已经调整", pro:"已由《项目综合与最终收窄》裁决放弃"},
+    file:"PLAN.md", lines:26, quote:"## 0. 环境实测结论", chain:null },
+];
+
+const LOGS = [
+  {tm:"21:46:02", tx:"开始监控：Codex / WorkBuddy / Claude（自动生成卡片 = 关）"},
+  {tm:"21:46:05", tx:"发现会话：决策卡片审计化：反舞弊痕迹与审计意见（WorkBuddy · 14 轮）", ok:true},
+  {tm:"21:46:07", tx:"读取卡片：C:\\Users\\whalewill\\Desktop\\trace\\docs\\decisions（43 个文件）"},
+  {tm:"21:46:09", tx:"生成范围：第 12 轮 ~ 第 14 轮（跟随对话刷选）"},
+  {tm:"21:46:14", tx:"卡片 D-20261016-04：quote 校验通过  src/audit.py:412", ok:true},
+  {tm:"21:46:14", tx:"卡片 D-20261016-05：quote 校验通过  src/audit.py:509", ok:true},
+  {tm:"21:46:15", tx:"丢弃 1 条：quote 在文件里找不到（卡片说 src/config.py:214 默认 60 秒，实际是 30）", bad:true},
+  {tm:"21:46:15", tx:"审计意见：带解释性说明（关键 12 · 需人工复核 2 · 未审计 3 · 未取证 0）"},
+  {tm:"21:46:16", tx:"可疑：有一条改动绕过了检查流程（用了 --no-verify 提交）  tools/build_exe.py:88", bad:true},
+];
+
+const REPORT = `
+<h4>整理结果 · 知迹 CogniTrail</h4>
+<p>43 条记录整理为 <b>18 组</b>：15 组单条成序，2 组融合，1 条剔除。</p>
+<h4>建议阅读顺序（先定什么、后定什么）</h4>
+<ol>
+  <li>产品边界：只审「怎么被决定下来的」，不审代码质量（S1）</li>
+  <li>数据通道：直接读三个工具的会话文件，不装插件、不联网（S1）</li>
+  <li>模型通道：官方地址直连，本机代理只做备选（S2）</li>
+  <li>证据闸门：quote 必须在真实文件里搜得到，搜不到就丢弃（S2）</li>
+  <li>审计化：关键度由脚本定档、模型只能往上抬（S3）</li>
+  <li>界面重做：结论先行、一步到证据（S4，进行中）</li>
+</ol>
+<h4>演进链（早期做法为什么被否）</h4>
+<p><span class="del">把探测到的本地代理端口写成默认值</span> → 别人下载后连不上，不适合作为分发默认值 → <b>默认走官方地址</b></p>
+<p><span class="del">Spinbox 选生成范围</span> → 发现成本高于直接刷选 → <b>对话内刷选联动</b></p>
+<p class="note">产物已保存：docs/decisions/CURATED.md（整理只发生在展示层，原始卡片一个都没动）</p>`;
+
+const SETTINGS = `
+<div class="set-row"><div><div class="k">监听来源 · Codex</div><div class="s">读取 ~/.codex/sessions/</div></div><div class="sp"></div><div class="switch on"></div></div>
+<div class="set-row"><div><div class="k">监听来源 · WorkBuddy</div><div class="s">读取 ~/.workbuddy/projects/</div></div><div class="sp"></div><div class="switch on"></div></div>
+<div class="set-row"><div><div class="k">监听来源 · Claude</div><div class="s">读取 ~/.claude/projects/</div></div><div class="sp"></div><div class="switch on"></div></div>
+<div class="set-row"><div><div class="k">自动生成卡片</div><div class="s">开着监控就边用边记（默认关：卡片应该是有意识记下来的）</div></div><div class="sp"></div><div class="switch"></div></div>
+<div class="set-row"><div><div class="k">写法</div><div class="s">只影响以后生成的内容，坐标和数字永远照原样</div></div><div class="sp"></div>
+  <span class="radio" id="r-plain"><span class="rc"></span>小白</span>
+  <span class="radio" id="r-pro"><span class="rc"></span>专家</span></div>
+<div class="set-row" style="display:block"><div class="k">API Key（DeepSeek）</div><div class="s">写进本机 .env，不会发到任何地方</div>
+  <div class="keybox"><input type="password" value="sk-f929xxxxxxxxxxxxxxxxxxxx" readonly><button class="mini-btn solid">保存并测试</button></div></div>
+<div class="set-row" style="display:block;border-bottom:none"><div class="k">AI 命令行（CLI）</div><div class="s">用你已登录的账号问答，不需要 Key</div>
+  <div class="keybox"><input value="C:\\Users\\whalewill\\AppData\\...\\claude.cmd" readonly><button class="mini-btn">浏览…</button><button class="mini-btn">测试</button></div>
+  <div class="keybox"><input value="C:\\Users\\whalewill\\AppData\\...\\codex.cmd" readonly><button class="mini-btn">浏览…</button><button class="mini-btn">测试</button></div></div>`;
+
+/* ---------------- 状态与渲染 ---------------- */
+let state = { sess:"s1", card:"c1", tone:"plain" };
+
+const $ = s => document.querySelector(s);
+
+function renderSessions(){
+  $("#sess-list").innerHTML = SESSIONS.map(s => {
+    const src = SRC[s.source];
+    return `<div class="sess ${s.id===state.sess?"on":""}" onclick="pickSession('${s.id}')">
+      <div class="r1"><span class="dot" style="background:${src.color}"></span>${src.name}<span class="t">${s.date} ${s.time}</span></div>
+      <div class="r2">${s.title}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderSummary(){
+  const list = CARDS.filter(c => c.sid === state.sess);
+  $("#sum-count").textContent = `本会话 ${list.length} 条`;
+  $("#sum-row").innerHTML = list.map(c => {
+    const src = SRC[c.source];
+    const tierName = c.tier==="key" ? "关键决策" : c.tier==="minor" ? "一般" : "记录";
+    const st = c.status==="superseded" ? `<span class="st sup">${c.statusNote}</span>`
+             : c.status==="dropped" ? `<span class="st drop">${c.statusNote}</span>` : "";
+    return `<div class="sum-card ${c.id===state.card?"on":""}" onclick="pickCard('${c.id}')">
+      <div class="r1"><span class="dot" style="background:${src.color}"></span>${src.name}
+        <span class="stg">· ${c.stage}</span>${st}</div>
+      <div class="tt">${c.title[state.tone]}</div>
+      <div class="mt"><span class="tchip ${c.tier==="key"?"key":""}">${tierName}</span>${c.file}:${c.lines}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderDetail(){
+  const c = CARDS.find(x => x.id === state.card);
+  if(!c){ $("#detail").innerHTML = "<p style='color:var(--ink-4)'>左边选一个会话，下面选一张卡片。</p>"; return; }
+  const src = SRC[c.source];
+  const sess = SESSIONS.find(s => s.id === c.sid);
+  const tierName = c.tier==="key" ? "关键决策" : c.tier==="minor" ? "一般" : "记录";
+  const statusHtml = c.status==="active" ? "" :
+    `<span class="tag gone">${c.statusNote}</span>`;
+  const alts = (c.alts||[]).map(a =>
+    `<div class="alt"><span class="no">被否</span><div><div class="tx">${a.t}</div><div class="wy">${a.w}</div></div></div>`).join("");
+  const chain = c.chain ? `
+    <div class="chain"><div class="k">演进 · 它推翻了早期做法</div>
+      <div class="row"><span class="old">${c.chain.old}</span><span class="arr">→</span>
+      <span class="why">${c.chain.why}</span></div>
+      <div class="row" style="margin-top:9px"><span class="arr">现在的做法</span><span class="arr">→</span><span class="now">${c.title[state.tone]}</span></div>
+    </div>` : "";
+  const dim = c.status!=="active" ? "opacity:.62" : "";
+  $("#detail").innerHTML = `
+    <div style="${dim}">
+      <div class="d-crumb">知迹 CogniTrail <span style="color:var(--ink-4)">›</span> <span class="mono">${c.stage}</span> <span style="color:var(--ink-4)">›</span> ${sess.date} 的会话 · 第 1 轮起的决策</div>
+      <div class="d-head">
+        <div class="d-title">${c.title[state.tone]}</div>
+        <button class="d-copy" onclick="toast('已复制这一段（含坐标）')">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          复制这一段
+        </button>
+      </div>
+      <div class="d-tags">
+        ${c.tier==="key" ? `<span class="tag key">关键决策</span>` : `<span class="tag">${tierName}</span>`}
+        <span class="tag"><span class="dot" style="background:${src.color}"></span>${src.name}</span>
+        ${statusHtml}
+        <span class="coord" onclick="toast('在文件里打开：${c.file}')">${c.file}:${c.lines}</span>
+        <span class="tag">${c.created}</span>
+      </div>
+      <div class="sec"><div class="k">为什么这么定</div><div class="v">${c.why[state.tone]}</div></div>
+      ${alts ? `<div class="sec"><div class="k">还考虑过什么</div><div class="alts">${alts}</div></div>` : ""}
+      <div class="sec"><div class="k">代价与风险</div><div class="v">${c.risk[state.tone]}</div></div>
+      <div class="evidence">
+        <div class="ev-head"><span class="t">证据</span><span class="mono">${c.file}:${c.lines}</span>
+          <button onclick="toast('在文件里打开：${c.file}')">在文件里打开</button></div>
+        <div class="ev-body"><span class="hl">${escapeHtml(c.quote)}</span></div>
+      </div>
+      ${chain}
+      <div style="margin-top:22px;font-size:11.5px;color:var(--ink-4)">
+        专家细节（默认折叠）：状态 active · 写法 ${state.tone==="pro"?"专家模式":"小白模式"} · 卡片文件 docs/decisions/ · 坐标已由脚本回文件核对
+      </div>
+    </div>`;
+}
+
+function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function pickSession(id){ state.sess = id; const first = CARDS.find(c=>c.sid===id); state.card = first ? first.id : null; renderAll(); }
+function pickCard(id){ state.card = id; renderAll(); }
+function renderAll(){ renderSessions(); renderSummary(); renderDetail(); }
+
+/* ---------------- 抽屉 ---------------- */
+const DRAWERS = {
+  log:{ t:"日志", s:"最近 5 分钟 · 可选中复制", html(){
+      return LOGS.map(l=>`<div class="logline ${l.bad?"bad":l.ok?"ok":""}"><span class="tm">${l.tm}</span><span class="tx">${l.tx}</span></div>`).join("");
+  }},
+  report:{ t:"整理决策", s:"按逻辑排序 · 融合冲突 · 演进链", html(){ return `<div class="rp">${REPORT}</div>`; }},
+  settings:{ t:"设置", s:"保存即生效，不用重启", html(){ return SETTINGS; }},
+};
+function openDrawer(key){
+  const d = DRAWERS[key];
+  $("#dw-title").textContent = d.t; $("#dw-sub").textContent = d.s;
+  $("#dw-body").innerHTML = d.html();
+  document.body.classList.add("drawer-open");
+  if(key==="log") $("#log-badge").textContent = "已读";
+}
+function closeDrawer(){ document.body.classList.remove("drawer-open"); }
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDrawer(); });
+
+/* ---------------- 写法两档 ---------------- */
+$("#tone-seg").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  state.tone = b.dataset.tone;
+  document.querySelectorAll("#tone-seg button").forEach(x=>x.classList.toggle("on", x===b));
+  const rp = $("#r-plain"), rx = $("#r-pro");
+  if(rp&&rx){ rp.classList.toggle("on", state.tone==="plain"); rx.classList.toggle("on", state.tone==="pro"); }
+  renderSummary(); renderDetail();
+});
+document.addEventListener("click", e=>{
+  const r = e.target.closest(".radio"); if(!r) return;
+  state.tone = r.id==="r-pro" ? "pro" : "plain";
+  document.querySelectorAll("#tone-seg button").forEach(x=>x.classList.toggle("on", x.dataset.tone===state.tone));
+  document.querySelectorAll(".radio").forEach(x=>x.classList.toggle("on", x===r));
+  renderSummary(); renderDetail();
+});
+
+/* ---------------- 轻提示 ---------------- */
+let toastTimer=null;
+function toast(msg){
+  let el = $("#toast");
+  if(!el){ el = document.createElement("div"); el.id="toast";
+    el.style.cssText="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#18181b;color:#ffffff;padding:9px 16px;border-radius:99px;font-size:12.5px;z-index:99;box-shadow:0 4px 16px rgba(0,0,0,.18);transition:opacity .2s";
+    document.body.appendChild(el); }
+  el.textContent = msg; el.style.opacity = "1";
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>{ el.style.opacity="0"; }, 2200);
+}
+
+/* 开关（设置抽屉里的小开关） */
+document.addEventListener("click", e=>{
+  const sw = e.target.closest(".switch"); if(sw) sw.classList.toggle("on");
+});
+
+renderAll();
+</script>
+</body>
+</html>

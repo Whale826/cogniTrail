@@ -1,0 +1,31 @@
+# 密钥：绝对不能提交
+.env
+
+# 本地数据
+data/*.db
+data/*.db-journal
+probe.db
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 演示仓库（由 samples/make_demo_repo.py 生成，含 .git，不应被父仓库跟踪）
+samples/demo-repo/
+
+# 构建产物（tools/build_exe.py 生成）
+dist/
+build/
+*.spec
+
+# 本地试验输出（跑 run/watch 时用的临时目录）
+out/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+.DS_Store

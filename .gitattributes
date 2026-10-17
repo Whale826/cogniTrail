@@ -1,0 +1,22 @@
+# 换行统一：仓库里一律存 LF。
+# 不写这个文件时，Windows 的 core.autocrlf=true 会在每次 add 时
+# 给每个文本文件打一条 "LF will be replaced by CRLF" 警告（无害但很吵）。
+* text=auto eol=lf
+
+# 这几个必须是 CRLF，否则 cmd 解析脚本会出问题
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# 二进制文件：禁止任何换行/编码转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.exe binary
+*.db binary
+*.zip binary

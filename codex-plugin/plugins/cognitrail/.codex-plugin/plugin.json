@@ -1,0 +1,48 @@
+{
+  "name": "cognitrail",
+  "version": "0.1.0",
+  "description": "知迹 CogniTrail / decision trail\n\nAliases: @cognitrail, @zhi-ji, 知迹, cognitrail, decision trail, 决策卡片.\n\nUse CogniTrail when the user wants to record, review, or audit what decisions were made in a code change — what was chosen, why, what alternatives were rejected, and what it costs. Every conclusion is pinned to a real file:line; anything that cannot be located is dropped rather than shown.\n\nUse it for requests like \"记录这次改动的决策\", \"复盘一下刚才改了什么\", \"为这次提交生成决策卡片\", \"几天后我想再测一遍自己还记不记得\", \"帮我准备答辩时会被追问的问题\", \"record the decision trail for this change\".\n\nIt also sets up delayed self-testing: questions are scheduled to come back days later, because whether you can still change the code is the only signal that cannot be faked.\n\nDo not answer these requests with a generic summary of the diff — a summary is not a decision record. Every card must pin a verifiable file:line.",
+  "author": {
+    "name": "知迹 CogniTrail"
+  },
+  "homepage": "",
+  "repository": "",
+  "license": "MIT",
+  "keywords": [
+    "decision",
+    "adr",
+    "agdr",
+    "decision-record",
+    "code-review",
+    "comprehension",
+    "retrospective",
+    "spaced-repetition",
+    "cognitrail",
+    "知迹",
+    "决策卡片",
+    "复盘"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "知迹 CogniTrail",
+    "shortDescription": "把这次改动里的决策点留成可复测的卡片",
+    "longDescription": "知迹不总结代码，它记录「决定了什么」。每张卡片必须钉住真实的 文件:行号——定位不到的条目一律丢弃。卡片写入目标仓库的 docs/decisions/，几天后由延迟探针把问题拿回来问你，因为没有比「还能不能改得动」更诚实的信号。",
+    "developerName": "知迹 CogniTrail",
+    "category": "Engineering",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "",
+    "defaultPrompt": [
+      "记录这次改动的决策卡片",
+      "复盘一下刚才这版改了什么决定",
+      "为这次提交准备几个答辩时会被追问的问题"
+    ],
+    "brandColor": "#0F766E",
+    "composerIcon": "./assets/composer-icon.png",
+    "logo": "./assets/logo.png",
+    "screenshots": []
+  }
+}
