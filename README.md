@@ -46,7 +46,9 @@
 
 ## 快速开始
 
-最方便的是直接进入release下载cogniTrail.exe文件，打开即可！！！
+最省事的方式：去 [Releases](https://github.com/Whale826/cogniTrail/releases) 下载
+`知迹CogniTrail.exe`，双击即用（**首次运行会被 SmartScreen 拦一下，属正常现象，
+放行方法与文件指纹见下方「下载与 Windows 提示」**）。
 
 ### 方式一 · 单文件 exe（推荐）
 
@@ -196,6 +198,34 @@ COGNITRAIL_MOCK=0
 >
 > 最省事的配法：打开窗口 → 点顶部 **「设置 Key」** → 粘进去 → 点「保存并测试」。
 > 它会写进上面那个 `.env`，并**让当前这个进程立刻生效** —— 不用改文件、不用重启。
+
+## 下载与「Windows 已保护你的电脑」
+
+Release 里的 `知迹CogniTrail.exe` **没有代码签名证书**（个人开源项目通常不会买，OV 证书一年上千元），
+所以第一次运行时 Windows SmartScreen 会拦一下。这是「未知发布者 + 下载次数还太少」的正常提示，
+**不是杀毒软件报毒**。
+
+放行方式：点「**更多信息**」→「**仍要运行**」。
+
+想确认文件没被掉包，对一下指纹：
+
+| 版本 | 大小 | SHA256 |
+|---|---|---|
+| v0.12.2 | 11.93 MB | `3821e3113fcf96dc84f04138d10bc076ef5d23c3425e9563833e0e26f032219e` |
+
+```powershell
+Get-FileHash .\知迹CogniTrail.exe -Algorithm SHA256
+```
+
+不愿意信任一个二进制文件的话，有两条更稳的路：
+
+- **自己构建**：`python tools/build_exe.py` —— 源码与发布版本一一对应，构建结果可复现
+- **直接跑源码**：`python src/gui.py` —— 只要 Python 3.10+ 带 tkinter，零第三方依赖
+
+> 打包成 zip 并不能绕过这个提示（Windows 会把「来自网络」的标记一起解压出来），
+> 所以仓库不额外提供压缩包。
+> 如果杀毒软件把它误判成病毒，可以把文件提交给微软复核：
+> <https://www.microsoft.com/en-us/wdsi/filesubmission>
 
 ## 数据从哪来
 
